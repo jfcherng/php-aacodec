@@ -24,14 +24,14 @@
     ],
     "autoload": {
         "psr-4": {
-            "Jfcherng\\": "src/"
+            "Jfcherng\\AaCodec\\": "src/"
         }
     },
     "require": {
         "php": "^7.1.3"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^2.11.0",
+        "friendsofphp/php-cs-fixer": "^2.11.1",
         "phpunit/phpunit": "^7.0"
     },
     "scripts": {

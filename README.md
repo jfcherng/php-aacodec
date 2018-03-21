@@ -3,7 +3,7 @@
 
 ## References
 
-- What is AA? ([Japanese style emoticons](http://utf-8.jp/public/aaencode.html))
+- What is AA? ([Japanese style emoticons, Kaomoji, 顔文字](http://utf-8.jp/public/aaencode.html))
 
 
 ## Installation via Composer
@@ -18,17 +18,17 @@ composer require "jfcherng/aacodec"
 After executing the following PHP code,
 
 ```php
-use Jfcherng\AaCodec;
+use Jfcherng\AaCodec\Codec;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $jsCode = 'alert("hello world");';
 $encodingLevel = 0; // larger to get a longer encoded js code
 
-$encoded = AaCodec::encode($jsCode, $encodingLevel);
+$encoded = Codec::encode($jsCode, $encodingLevel);
 file_put_contents('encoded.js', $encoded);
 
-$decoded = AaCodec::decode($encoded);
+$decoded = Codec::decode($encoded);
 file_put_contents('decoded.js', $decoded);
 ```
 

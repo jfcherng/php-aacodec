@@ -1,6 +1,6 @@
 <?php
 
-namespace Jfcherng;
+namespace Jfcherng\AaCodec;
 
 use RuntimeException;
 
@@ -14,7 +14,7 @@ use RuntimeException;
  *
  * @license MIT
  */
-class AaCodec
+class Codec
 {
     /**
      * @var string
@@ -30,22 +30,22 @@ class AaCodec
      * @var string[]
      */
     const BYTES = [
-        0 => '(c^_^o)',
-        1 => '(ﾟΘﾟ)',
-        2 => '((o^_^o)-(ﾟΘﾟ))',
-        3 => '(o^_^o)',
-        4 => '(ﾟｰﾟ)',
-        5 => '((ﾟｰﾟ)+(ﾟΘﾟ))',
-        6 => '((o^_^o)+(o^_^o))',
-        7 => '((ﾟｰﾟ)+(o^_^o))',
-        8 => '((ﾟｰﾟ)+(ﾟｰﾟ))',
-        9 => '((ﾟｰﾟ)+(ﾟｰﾟ)+(ﾟΘﾟ))',
-        10 => '(ﾟДﾟ).ﾟωﾟﾉ',
-        11 => '(ﾟДﾟ).ﾟΘﾟﾉ',
-        12 => "(ﾟДﾟ)['c']",
-        13 => '(ﾟДﾟ).ﾟｰﾟﾉ',
-        14 => '(ﾟДﾟ).ﾟДﾟﾉ',
-        15 => '(ﾟДﾟ)[ﾟΘﾟ]',
+        '(c^_^o)',
+        '(ﾟΘﾟ)',
+        '((o^_^o)-(ﾟΘﾟ))',
+        '(o^_^o)',
+        '(ﾟｰﾟ)',
+        '((ﾟｰﾟ)+(ﾟΘﾟ))',
+        '((o^_^o)+(o^_^o))',
+        '((ﾟｰﾟ)+(o^_^o))',
+        '((ﾟｰﾟ)+(ﾟｰﾟ))',
+        '((ﾟｰﾟ)+(ﾟｰﾟ)+(ﾟΘﾟ))',
+        '(ﾟДﾟ).ﾟωﾟﾉ',
+        '(ﾟДﾟ).ﾟΘﾟﾉ',
+        "(ﾟДﾟ)['c']",
+        '(ﾟДﾟ).ﾟｰﾟﾉ',
+        '(ﾟДﾟ).ﾟДﾟﾉ',
+        '(ﾟДﾟ)[ﾟΘﾟ]',
     ];
 
     /**
@@ -58,7 +58,7 @@ class AaCodec
      */
     public static function encode(string $js, int $level = 0): string
     {
-        $js = self::makeTrailingSemicolon($js);
+        $js = self::unifyJavascript($js);
 
         $result = '';
 
@@ -69,7 +69,7 @@ class AaCodec
             if ($code < 128) {
                 $text .= preg_replace_callback(
                     '~[0-7]+~uS',
-                    function (array $matches) use ($level) {
+                    function (array $matches) use ($level): string {
                         $bytes = array_map('intval', str_split($matches[0]));
                         $replaced = '';
 
@@ -119,7 +119,7 @@ class AaCodec
             throw new RuntimeException('$js is not aa-decode-able.');
         }
 
-        $decoded = self::makeTrailingSemicolon(self::deobfuscate($encoded));
+        $decoded = self::unifyJavascript(self::deobfuscate($encoded));
 
         return mb_substr($js, 0, $start, 'UTF-8') . $decoded . self::decode(mb_substr($js, $next, null, 'UTF-8'));
     }
@@ -234,7 +234,7 @@ class AaCodec
     protected static function deobfuscate(string $js): string
     {
         static $hex = '(oﾟｰﾟo)+';
-        static $native = [
+        static $natives = [
             '-~' => '1+',
             '!' => '1',
             '[]' => '0',
@@ -271,7 +271,7 @@ class AaCodec
         }
 
         foreach (mb_split(preg_quote('(ﾟДﾟ)[ﾟεﾟ]+'), $js) as $block) {
-            $block = trim(trim(strtr($block, $native), '+'));
+            $block = trim(strtr($block, $natives), " \t\n\r\0\x0B+");
 
             if ($block === '') {
                 continue;
@@ -296,8 +296,8 @@ class AaCodec
      *
      * @return string
      */
-    protected static function makeTrailingSemicolon(string $str): string
+    protected static function unifyJavascript(string $str): string
     {
-        return trim(rtrim(rtrim($str), ';')) . ';';
+        return trim($str, " \t\n\r\0\x0B;") . ';';
     }
 }
