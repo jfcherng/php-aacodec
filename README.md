@@ -1,4 +1,4 @@
-# PHP AA Codec
+# PHP AA Codec [![Build Status](https://travis-ci.org/jfcherng/php-aacodec.svg?branch=master)](https://travis-ci.org/jfcherng/php-aacodec)
 
 
 ## References
