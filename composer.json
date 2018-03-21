@@ -1,0 +1,45 @@
+{
+    "name": "jfcherng/aacodec",
+    "description": "Encode/decode JavaScript to/from Japanese style emoticons.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrey Izman",
+            "email": "izmanw@gmail.com"
+        },
+        {
+            "name": "Jack Cherng",
+            "email": "jfcherng@gmail.com"
+        }
+    ],
+    "keywords": [
+        "codec",
+        "encoder",
+        "decoder",
+        "aaencode",
+        "aadecode",
+        "aaencoder",
+        "aadecoder",
+        "javascript"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Jfcherng\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.1.3"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.11.0",
+        "phpunit/phpunit": "^7.0"
+    },
+    "scripts": {
+        "fix": [
+            "php-cs-fixer fix --verbose"
+        ],
+        "test": [
+            "phpunit"
+        ]
+    }
+}
