@@ -58,7 +58,7 @@ class Codec
      */
     public static function encode(string $js, int $level = 0): string
     {
-        $js = self::unifyJavascript($js);
+        $js = static::unifyJavascript($js);
 
         $result = '';
 
@@ -76,8 +76,8 @@ class Codec
                         foreach ($bytes as $byte) {
                             $replaced .= (
                                 $level
-                                    ? self::randomize($byte, $level)
-                                    : self::BYTES[$byte]
+                                    ? static::randomize($byte, $level)
+                                    : static::BYTES[$byte]
                             ) . '+';
                         }
 
@@ -90,14 +90,14 @@ class Codec
 
                 $hex = str_split(substr('000' . dechex($code), -4));
                 foreach ($hex as $digit) {
-                    $text .= self::BYTES[hexdec($digit)] . '+';
+                    $text .= static::BYTES[hexdec($digit)] . '+';
                 }
             }
 
             $result .= $text;
         }
 
-        return self::CODE_BEGIN . $result . self::CODE_END;
+        return static::CODE_BEGIN . $result . static::CODE_END;
     }
 
     /**
@@ -115,13 +115,13 @@ class Codec
             return '';
         }
 
-        if (!self::isAaEncoded($js, $start, $next, $encoded)) {
+        if (!static::isAaEncoded($js, $start, $next, $encoded)) {
             throw new RuntimeException('$js is not aa-decode-able.');
         }
 
-        $decoded = self::unifyJavascript(self::deobfuscate($encoded));
+        $decoded = static::unifyJavascript(static::deobfuscate($encoded));
 
-        return mb_substr($js, 0, $start, 'UTF-8') . $decoded . self::decode(mb_substr($js, $next, null, 'UTF-8'));
+        return mb_substr($js, 0, $start, 'UTF-8') . $decoded . static::decode(mb_substr($js, $next, null, 'UTF-8'));
     }
 
     /**
@@ -161,10 +161,10 @@ class Codec
         while (($start = mb_strpos($js, 'ﾟωﾟﾉ', $start + 1, 'UTF-8')) !== false) {
             $clear = preg_replace(['~/\*.+?\*/~', '~[\x03-\x20]~'], '', mb_substr($js, $start, null, 'UTF-8'));
 
-            $len = mb_strlen(self::CODE_BEGIN, 'UTF-8');
+            $len = mb_strlen(static::CODE_BEGIN, 'UTF-8');
             if (
-                mb_substr($clear, 0, $len, 'UTF-8') === self::CODE_BEGIN &&
-                mb_strpos($clear, self::CODE_END, $len, 'UTF-8') !== false &&
+                mb_substr($clear, 0, $len, 'UTF-8') === static::CODE_BEGIN &&
+                mb_strpos($clear, static::CODE_END, $len, 'UTF-8') !== false &&
                 ($matches = $find($js, 'ﾟoﾟ', $start))
             ) {
                 [$beginAt, $endAt] = $matches;
@@ -223,7 +223,7 @@ class Codec
 
         $byte = str_replace('+-', '-', $byte);
 
-        return strtr($byte, self::BYTES);
+        return strtr($byte, static::BYTES);
     }
 
     /**
@@ -266,7 +266,7 @@ class Codec
             return implode('', $split);
         };
 
-        foreach (self::BYTES as $byte => $search) {
+        foreach (static::BYTES as $byte => $search) {
             $js = implode($byte, mb_split(preg_quote($search), $js));
         }
 
