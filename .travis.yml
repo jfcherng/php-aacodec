@@ -5,7 +5,7 @@ php:
   - 7.2
 
 install:
-  - composer install --quiet
+  - composer install --prefer-dist --no-progress
 
 script:
   - composer test
