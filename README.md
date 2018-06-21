@@ -6,10 +6,10 @@
 - What is AA? ([Japanese style emoticons, Kaomoji, 顔文字](http://utf-8.jp/public/aaencode.html))
 
 
-## Installation via Composer
+## Installation
 
-```bash
-composer require "jfcherng/aacodec"
+```
+$ composer require "jfcherng/aacodec"
 ```
 
 
