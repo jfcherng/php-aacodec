@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Jfcherng\AaCodec\Test;
 
 use Jfcherng\AaCodec\Codec;
