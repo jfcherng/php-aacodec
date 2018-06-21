@@ -1,6 +1,8 @@
 <?php
 
 $config = PhpCsFixer\Config::create()
+    ->setIndent("    ")
+    ->setLineEnding("\n")
     ->setCacheFile(__DIR__ . '/.php_cs.cache')
     ->setRiskyAllowed(true)
     ->setRules([
@@ -20,6 +22,7 @@ $config = PhpCsFixer\Config::create()
         'linebreak_after_opening_tag' => true,
         'list_syntax' => ['syntax' => 'short'],
         'method_argument_space' => ['ensure_fully_multiline' => true],
+        'native_constant_invocation' => false,
         'no_alternative_syntax' => true,
         'no_multiline_whitespace_before_semicolons' => true,
         'no_null_property_initialization' => true,
