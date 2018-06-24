@@ -43,3 +43,9 @@ file_put_contents('decoded.js', $decoded);
 ```javascript
 alert("hello world");
 ```
+
+
+Supporters <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATXYY9Y78EQ3Y" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
+==========
+
+Thank you guys for sending me some cups of coffee.
