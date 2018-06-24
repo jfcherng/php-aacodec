@@ -9,7 +9,7 @@
 ## Installation
 
 ```
-$ composer require "jfcherng/aacodec"
+$ composer require "jfcherng/php-aacodec"
 ```
 
 

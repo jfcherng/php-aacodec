@@ -1,5 +1,5 @@
 {
-    "name": "jfcherng/aacodec",
+    "name": "jfcherng/php-aacodec",
     "description": "Encode/decode JavaScript to/from Japanese style emoticons.",
     "license": "MIT",
     "authors": [
