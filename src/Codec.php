@@ -79,7 +79,7 @@ class Codec
                             $replaced .= (
                                 $level
                                     ? static::randomize($byte, $level)
-                                    : static::BYTES[$byte]
+                                    : self::BYTES[$byte]
                             ) . '+';
                         }
 
@@ -92,7 +92,7 @@ class Codec
 
                 $hex = str_split(substr('000' . dechex($code), -4));
                 foreach ($hex as $digit) {
-                    $text .= static::BYTES[hexdec($digit)] . '+';
+                    $text .= self::BYTES[hexdec($digit)] . '+';
                 }
             }
 
@@ -151,7 +151,7 @@ class Codec
             $matches = [];
             for ($i = 0; $i < 6 && $offset !== false; ++$i) {
                 if (($offset = mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
-                    $matches[$i] = $offset;
+                    $matches[] = $offset;
                     ++$offset;
                 }
             }
@@ -202,6 +202,8 @@ class Codec
             7 => [['+3', '+4'], ['+3', '+3', '+1'], ['+4', '+4', '-1']],
         ];
 
+        $byte = (string) $byte;
+
         for (; $level > 0; --$level) {
             $byte = preg_replace_callback(
                 '~[0-7]+~uS',
@@ -210,7 +212,7 @@ class Codec
                     $replaced = '';
 
                     foreach ($digits as $digit) {
-                        $numbers = $random[$digit];
+                        $numbers = $random[(int) $digit];
                         $numbers = $numbers[array_rand($numbers)];
                         shuffle($numbers);
                         $byte = ltrim(implode('', $numbers), '+');
@@ -225,7 +227,7 @@ class Codec
 
         $byte = str_replace('+-', '-', $byte);
 
-        return strtr($byte, static::BYTES);
+        return strtr($byte, self::BYTES);
     }
 
     /**
@@ -268,8 +270,8 @@ class Codec
             return implode('', $split);
         };
 
-        foreach (static::BYTES as $byte => $search) {
-            $js = implode($byte, mb_split(preg_quote($search), $js));
+        foreach (self::BYTES as $byte => $search) {
+            $js = implode((string) $byte, mb_split(preg_quote($search), $js));
         }
 
         foreach (mb_split(preg_quote('(ﾟДﾟ)[ﾟεﾟ]+'), $js) as $block) {
