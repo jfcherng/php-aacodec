@@ -93,7 +93,7 @@ final class CodecTest extends TestCase
 
     protected function isJsEqual(string $a, string $b): bool
     {
-        $args = array_map([$this, 'unifyJavascript'], func_get_args());
+        $args = \array_map([$this, 'unifyJavascript'], \func_get_args());
 
         return $args[0] === $args[1];
     }
@@ -107,6 +107,6 @@ final class CodecTest extends TestCase
      */
     protected function unifyJavascript(string $str): string
     {
-        return trim($str, " \t\n\r\0\x0B;") . ';';
+        return \trim($str, " \t\n\r\0\x0B;") . ';';
     }
 }

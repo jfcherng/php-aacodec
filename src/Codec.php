@@ -64,15 +64,15 @@ class Codec
 
         $result = '';
 
-        for ($i = 0, $len = mb_strlen($js, 'UTF-8'); $i < $len; ++$i) {
+        for ($i = 0, $len = \mb_strlen($js, 'UTF-8'); $i < $len; ++$i) {
             $text = '(ﾟДﾟ)[ﾟεﾟ]+';
 
-            $code = unpack('N', mb_convert_encoding(mb_substr($js, $i, 1, 'UTF-8'), 'UCS-4BE', 'UTF-8'))[1];
+            $code = \unpack('N', \mb_convert_encoding(\mb_substr($js, $i, 1, 'UTF-8'), 'UCS-4BE', 'UTF-8'))[1];
             if ($code < 128) {
-                $text .= preg_replace_callback(
+                $text .= \preg_replace_callback(
                     '~[0-7]+~uS',
                     function (array $matches) use ($level): string {
-                        $bytes = array_map('intval', str_split($matches[0]));
+                        $bytes = \array_map('intval', \str_split($matches[0]));
                         $replaced = '';
 
                         foreach ($bytes as $byte) {
@@ -85,14 +85,14 @@ class Codec
 
                         return $replaced;
                     },
-                    decoct($code)
+                    \decoct($code)
                 );
             } else {
                 $text .= '(oﾟｰﾟo)+';
 
-                $hex = str_split(substr('000' . dechex($code), -4));
+                $hex = \str_split(\substr('000' . \dechex($code), -4));
                 foreach ($hex as $digit) {
-                    $text .= self::BYTES[hexdec($digit)] . '+';
+                    $text .= self::BYTES[\hexdec($digit)] . '+';
                 }
             }
 
@@ -123,7 +123,7 @@ class Codec
 
         $decoded = static::unifyJavascript(static::deobfuscate($encoded));
 
-        return mb_substr($js, 0, $start, 'UTF-8') . $decoded . static::decode(mb_substr($js, $next, null, 'UTF-8'));
+        return \mb_substr($js, 0, $start, 'UTF-8') . $decoded . static::decode(\mb_substr($js, $next, null, 'UTF-8'));
     }
 
     /**
@@ -150,31 +150,31 @@ class Codec
         $find = function (string $haystack, string $needle, int $offset = 0): ?array {
             $matches = [];
             for ($i = 0; $i < 6 && $offset !== false; ++$i) {
-                if (($offset = mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
+                if (($offset = \mb_strpos($haystack, $needle, $offset, 'UTF-8')) !== false) {
                     $matches[] = $offset;
                     ++$offset;
                 }
             }
 
-            return count($matches) >= 6 ? [$matches[4], $matches[5]] : null;
+            return \count($matches) >= 6 ? [$matches[4], $matches[5]] : null;
         };
 
         $start = -1;
-        while (($start = mb_strpos($js, 'ﾟωﾟﾉ', $start + 1, 'UTF-8')) !== false) {
-            $clear = preg_replace(['~/\*.+?\*/~', '~[\x03-\x20]~'], '', mb_substr($js, $start, null, 'UTF-8'));
+        while (($start = \mb_strpos($js, 'ﾟωﾟﾉ', $start + 1, 'UTF-8')) !== false) {
+            $clear = \preg_replace(['~/\*.+?\*/~', '~[\x03-\x20]~'], '', \mb_substr($js, $start, null, 'UTF-8'));
 
-            $len = mb_strlen(static::CODE_BEGIN, 'UTF-8');
+            $len = \mb_strlen(static::CODE_BEGIN, 'UTF-8');
             if (
-                mb_substr($clear, 0, $len, 'UTF-8') === static::CODE_BEGIN &&
-                mb_strpos($clear, static::CODE_END, $len, 'UTF-8') !== false &&
+                \mb_substr($clear, 0, $len, 'UTF-8') === static::CODE_BEGIN &&
+                \mb_strpos($clear, static::CODE_END, $len, 'UTF-8') !== false &&
                 ($matches = $find($js, 'ﾟoﾟ', $start))
             ) {
                 [$beginAt, $endAt] = $matches;
-                $beginAt = mb_strpos($js, '+', $beginAt, 'UTF-8');
-                $endAt = mb_strrpos($js, '(', -mb_strlen($js, 'UTF-8') + $endAt, 'UTF-8');
+                $beginAt = \mb_strpos($js, '+', $beginAt, 'UTF-8');
+                $endAt = \mb_strrpos($js, '(', -\mb_strlen($js, 'UTF-8') + $endAt, 'UTF-8');
 
-                $next = mb_strpos($js, ';', $endAt + 1, 'UTF-8') + 1;
-                $encoded = preg_replace('~[\x03-\x20]~', '', mb_substr($js, $beginAt, $endAt - $beginAt, 'UTF-8'));
+                $next = \mb_strpos($js, ';', $endAt + 1, 'UTF-8') + 1;
+                $encoded = \preg_replace('~[\x03-\x20]~', '', \mb_substr($js, $beginAt, $endAt - $beginAt, 'UTF-8'));
 
                 return true;
             }
@@ -205,17 +205,17 @@ class Codec
         $byte = (string) $byte;
 
         for (; $level > 0; --$level) {
-            $byte = preg_replace_callback(
+            $byte = \preg_replace_callback(
                 '~[0-7]+~uS',
                 function (array $matches) use ($random): string {
-                    $digits = str_split($matches[0]);
+                    $digits = \str_split($matches[0]);
                     $replaced = '';
 
                     foreach ($digits as $digit) {
                         $numbers = $random[(int) $digit];
-                        $numbers = $numbers[array_rand($numbers)];
-                        shuffle($numbers);
-                        $byte = ltrim(implode('', $numbers), '+');
+                        $numbers = $numbers[\array_rand($numbers)];
+                        \shuffle($numbers);
+                        $byte = \ltrim(\implode('', $numbers), '+');
                         $replaced .= "(${byte})";
                     }
 
@@ -225,9 +225,9 @@ class Codec
             );
         }
 
-        $byte = str_replace('+-', '-', $byte);
+        $byte = \str_replace('+-', '-', $byte);
 
-        return strtr($byte, self::BYTES);
+        return \strtr($byte, self::BYTES);
     }
 
     /**
@@ -245,11 +245,11 @@ class Codec
         ];
 
         $chars = [];
-        $hexLen = mb_strlen($hex, 'UTF-8');
+        $hexLen = \mb_strlen($hex, 'UTF-8');
 
         $convert = function (string $block, callable $func): string {
-            while (preg_match('~\([0-9\-+*/]+\)~', $block)) {
-                $block = preg_replace_callback(
+            while (\preg_match('~\([0-9\-+*/]+\)~', $block)) {
+                $block = \preg_replace_callback(
                     '~\([0-9\-+*/]+\)~',
                     function (array $matches): float {
                         return eval("return {$matches[0]};");
@@ -259,38 +259,38 @@ class Codec
             }
 
             $split = [];
-            foreach (explode('+', trim($block, '+')) as $num) {
+            foreach (\explode('+', \trim($block, '+')) as $num) {
                 if ($num === '') {
                     continue;
                 }
 
-                $split[] = $func((int) trim($num));
+                $split[] = $func((int) \trim($num));
             }
 
-            return implode('', $split);
+            return \implode('', $split);
         };
 
         foreach (self::BYTES as $byte => $search) {
-            $js = implode((string) $byte, mb_split(preg_quote($search), $js));
+            $js = \implode((string) $byte, \mb_split(\preg_quote($search), $js));
         }
 
-        foreach (mb_split(preg_quote('(ﾟДﾟ)[ﾟεﾟ]+'), $js) as $block) {
-            $block = trim(strtr($block, $natives), " \t\n\r\0\x0B+");
+        foreach (\mb_split(\preg_quote('(ﾟДﾟ)[ﾟεﾟ]+'), $js) as $block) {
+            $block = \trim(\strtr($block, $natives), " \t\n\r\0\x0B+");
 
             if ($block === '') {
                 continue;
             }
 
-            if (mb_substr($block, 0, $hexLen, 'UTF-8') === $hex) {
-                $code = hexdec($convert(mb_substr($block, $hexLen, null, 'UTF-8'), 'dechex'));
+            if (\mb_substr($block, 0, $hexLen, 'UTF-8') === $hex) {
+                $code = \hexdec($convert(\mb_substr($block, $hexLen, null, 'UTF-8'), 'dechex'));
             } else {
-                $code = octdec($convert($block, 'decoct'));
+                $code = \octdec($convert($block, 'decoct'));
             }
 
-            $chars[] = mb_convert_encoding('&#' . (int) $code . ';', 'UTF-8', 'HTML-ENTITIES');
+            $chars[] = \mb_convert_encoding('&#' . (int) $code . ';', 'UTF-8', 'HTML-ENTITIES');
         }
 
-        return implode('', $chars);
+        return \implode('', $chars);
     }
 
     /**
@@ -302,6 +302,6 @@ class Codec
      */
     protected static function unifyJavascript(string $str): string
     {
-        return trim($str, " \t\n\r\0\x0B;") . ';';
+        return \trim($str, " \t\n\r\0\x0B;") . ';';
     }
 }
