@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Jfcherng\AaCodec;
 
-use RuntimeException;
-
 /**
  * Class for encode/decode JavaScript codes in "Japanese style emoticons" form.
  *
@@ -67,23 +65,27 @@ class Codec
         for ($i = 0, $len = \mb_strlen($js, 'UTF-8'); $i < $len; ++$i) {
             $text = '(ﾟДﾟ)[ﾟεﾟ]+';
 
-            $code = \unpack('N', \mb_convert_encoding(\mb_substr($js, $i, 1, 'UTF-8'), 'UCS-4BE', 'UTF-8'))[1];
+            $code = \unpack('N', \mb_convert_encoding(
+                \mb_substr($js, $i, 1, 'UTF-8'),
+                'UCS-4BE',
+                'UTF-8'
+            ))[1];
+
             if ($code < 128) {
                 $text .= \preg_replace_callback(
-                    '~[0-7]+~uS',
+                    '/[0-7]++/uS',
                     function (array $matches) use ($level): string {
                         $bytes = \array_map('intval', \str_split($matches[0]));
-                        $replaced = '';
+                        $replaceds = \array_map(
+                            $level > 0 ? function (int $byte) use ($level): string {
+                                return static::randomize($byte, $level);
+                            } : function (int $byte) use ($level): string {
+                                return static::BYTES[$byte];
+                            },
+                            $bytes
+                        );
 
-                        foreach ($bytes as $byte) {
-                            $replaced .= (
-                                $level
-                                    ? static::randomize($byte, $level)
-                                    : self::BYTES[$byte]
-                            ) . '+';
-                        }
-
-                        return $replaced;
+                        return \implode('+', $replaceds) . '+';
                     },
                     \decoct($code)
                 );
@@ -92,7 +94,7 @@ class Codec
 
                 $hex = \str_split(\substr('000' . \dechex($code), -4));
                 foreach ($hex as $digit) {
-                    $text .= self::BYTES[\hexdec($digit)] . '+';
+                    $text .= static::BYTES[\hexdec($digit)] . '+';
                 }
             }
 
@@ -103,31 +105,33 @@ class Codec
     }
 
     /**
-     * Decode AA-encoded JavaScript codes.
+     * Decode encoded JavaScript codes.
      *
      * @param string $js the encoded JavaScript code
      *
-     * @throws RuntimeException if $js is not decode-able
+     * @throws UndecodableException if the JavaScript is undecodable
      *
      * @return string the decoded JavaScript code
      */
     public static function decode(string $js): string
     {
-        if ($js === '') {
+        if (($js = \trim($js)) === '') {
             return '';
         }
 
         if (!static::isAaEncoded($js, $start, $next, $encoded)) {
-            throw new RuntimeException('$js is not aa-decode-able.');
+            throw new UndecodableException('the input JavaScript is not decodable.');
         }
 
         $decoded = static::unifyJavascript(static::deobfuscate($encoded));
 
-        return \mb_substr($js, 0, $start, 'UTF-8') . $decoded . static::decode(\mb_substr($js, $next, null, 'UTF-8'));
+        return \mb_substr($js, 0, $start, 'UTF-8')
+            . $decoded
+            . static::decode(\mb_substr($js, $next, null, 'UTF-8'));
     }
 
     /**
-     * Check JavaScript code is AA-encoded or not.
+     * Check JavaScript code is encoded or not.
      *
      * @param string      $js       the JavaScript code
      * @param null|int    &$start
@@ -161,7 +165,11 @@ class Codec
 
         $start = -1;
         while (($start = \mb_strpos($js, 'ﾟωﾟﾉ', $start + 1, 'UTF-8')) !== false) {
-            $clear = \preg_replace(['~/\*.+?\*/~', '~[\x03-\x20]~'], '', \mb_substr($js, $start, null, 'UTF-8'));
+            $clear = \preg_replace(
+                ['/\/\*.*?\*\//uS', '/[\x03-\x20]++/uS'],
+                '',
+                \mb_substr($js, $start, null, 'UTF-8')
+            );
 
             $len = \mb_strlen(static::CODE_BEGIN, 'UTF-8');
             if (
@@ -174,7 +182,11 @@ class Codec
                 $endAt = \mb_strrpos($js, '(', -\mb_strlen($js, 'UTF-8') + $endAt, 'UTF-8');
 
                 $next = \mb_strpos($js, ';', $endAt + 1, 'UTF-8') + 1;
-                $encoded = \preg_replace('~[\x03-\x20]~', '', \mb_substr($js, $beginAt, $endAt - $beginAt, 'UTF-8'));
+                $encoded = \preg_replace(
+                    '/[\x03-\x20]++/uS',
+                    '',
+                    \mb_substr($js, $beginAt, $endAt - $beginAt, 'UTF-8')
+                );
 
                 return true;
             }
@@ -206,7 +218,7 @@ class Codec
 
         for (; $level > 0; --$level) {
             $byte = \preg_replace_callback(
-                '~[0-7]+~uS',
+                '/[0-7]++/uS',
                 function (array $matches) use ($random): string {
                     $digits = \str_split($matches[0]);
                     $replaced = '';
@@ -215,8 +227,7 @@ class Codec
                         $numbers = $random[(int) $digit];
                         $numbers = $numbers[\array_rand($numbers)];
                         \shuffle($numbers);
-                        $byte = \ltrim(\implode('', $numbers), '+');
-                        $replaced .= "(${byte})";
+                        $replaced .= '(' . \ltrim(\implode('', $numbers), '+') . ')';
                     }
 
                     return $replaced;
@@ -227,7 +238,7 @@ class Codec
 
         $byte = \str_replace('+-', '-', $byte);
 
-        return \strtr($byte, self::BYTES);
+        return \strtr($byte, static::BYTES);
     }
 
     /**
@@ -248,15 +259,17 @@ class Codec
         $hexLen = \mb_strlen($hex, 'UTF-8');
 
         $convert = function (string $block, callable $func): string {
-            while (\preg_match('~\([0-9\-+*/]+\)~', $block)) {
+            do {
                 $block = \preg_replace_callback(
-                    '~\([0-9\-+*/]+\)~',
+                    '/\([0-9\-+*\/]++\)/uS',
                     function (array $matches): float {
                         return eval("return {$matches[0]};");
                     },
-                    $block
+                    $block,
+                    -1,
+                    $count
                 );
-            }
+            } while ($count > 0);
 
             $split = [];
             foreach (\explode('+', \trim($block, '+')) as $num) {
@@ -270,24 +283,20 @@ class Codec
             return \implode('', $split);
         };
 
-        foreach (self::BYTES as $byte => $search) {
+        foreach (static::BYTES as $byte => $search) {
             $js = \implode((string) $byte, \mb_split(\preg_quote($search), $js));
         }
 
         foreach (\mb_split(\preg_quote('(ﾟДﾟ)[ﾟεﾟ]+'), $js) as $block) {
-            $block = \trim(\strtr($block, $natives), " \t\n\r\0\x0B+");
-
-            if ($block === '') {
+            if (($block = static::trimExtraChars(\strtr($block, $natives), '+')) === '') {
                 continue;
             }
 
-            if (\mb_substr($block, 0, $hexLen, 'UTF-8') === $hex) {
-                $code = \hexdec($convert(\mb_substr($block, $hexLen, null, 'UTF-8'), 'dechex'));
-            } else {
-                $code = \octdec($convert($block, 'decoct'));
-            }
+            $code = \mb_substr($block, 0, $hexLen, 'UTF-8') === $hex
+                ? \hexdec($convert(\mb_substr($block, $hexLen, null, 'UTF-8'), 'dechex'))
+                : \octdec($convert($block, 'decoct'));
 
-            $chars[] = \mb_convert_encoding('&#' . (int) $code . ';', 'UTF-8', 'HTML-ENTITIES');
+            $chars[] = \mb_convert_encoding("&#{$code};", 'UTF-8', 'HTML-ENTITIES');
         }
 
         return \implode('', $chars);
@@ -302,6 +311,19 @@ class Codec
      */
     protected static function unifyJavascript(string $str): string
     {
-        return \trim($str, " \t\n\r\0\x0B;") . ';';
+        return static::trimExtraChars($str, ';') . ';';
+    }
+
+    /**
+     * PHP trim() but easier to set extra trimed chars.
+     *
+     * @param string $str        the string
+     * @param string $extraChars the extra characters
+     *
+     * @return string
+     */
+    protected static function trimExtraChars(string $str, string $extraChars = '')
+    {
+        return \trim($str, " \t\n\r\0\x0B{$extraChars}");
     }
 }
