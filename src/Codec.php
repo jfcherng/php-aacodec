@@ -262,8 +262,8 @@ class Codec
             do {
                 $block = \preg_replace_callback(
                     '/\([0-9\-+*\/]++\)/uS',
-                    function (array $matches): float {
-                        return eval("return {$matches[0]};");
+                    function (array $matches): string {
+                        return (string) eval("return {$matches[0]};");
                     },
                     $block,
                     -1,
