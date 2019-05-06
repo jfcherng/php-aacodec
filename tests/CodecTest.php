@@ -10,6 +10,8 @@ use RuntimeException;
 
 /**
  * @covers \Jfcherng\AaCodec
+ *
+ * @internal
  */
 final class CodecTest extends TestCase
 {
@@ -44,7 +46,7 @@ final class CodecTest extends TestCase
      */
     public function testEncode(array $testcase): void
     {
-        $this->assertTrue($this->isJsEqual(
+        static::assertTrue($this->isJsEqual(
             Codec::encode($testcase['d'], 0),
             $testcase['e']
         ));
@@ -59,7 +61,7 @@ final class CodecTest extends TestCase
      */
     public function testDecode(array $testcase): void
     {
-        $this->assertTrue($this->isJsEqual(
+        static::assertTrue($this->isJsEqual(
             Codec::decode($testcase['e']),
             $testcase['d']
         ));
@@ -75,7 +77,7 @@ final class CodecTest extends TestCase
     public function testDecodeFailed(array $testcase): void
     {
         $this->expectException(RuntimeException::class);
-        $this->assertNotSame(Codec::decode($testcase['d']), true);
+        static::assertNotSame(Codec::decode($testcase['d']), true);
     }
 
     /**
@@ -87,8 +89,8 @@ final class CodecTest extends TestCase
      */
     public function testIsAaEncoded(array $testcase): void
     {
-        $this->assertTrue(Codec::isAaEncoded($testcase['e']));
-        $this->assertFalse(Codec::isAaEncoded($testcase['d']));
+        static::assertTrue(Codec::isAaEncoded($testcase['e']));
+        static::assertFalse(Codec::isAaEncoded($testcase['d']));
     }
 
     protected function isJsEqual(string $a, string $b): bool
