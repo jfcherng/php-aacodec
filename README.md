@@ -1,14 +1,18 @@
-# php-aacodec [![Build Status](https://travis-ci.org/jfcherng/php-aacodec.svg?branch=master)](https://travis-ci.org/jfcherng/php-aacodec)
+# php-aacodec
 
+<a href="https://travis-ci.org/jfcherng/php-aacodec"><img alt="Travis (.org) branch" src="https://img.shields.io/travis/jfcherng/php-aacodec/master"></a>
+<a href="https://packagist.org/packages/jfcherng/php-aacodec"><img alt="Packagist" src="https://img.shields.io/packagist/dt/jfcherng/php-aacodec"></a>
+<a href="https://packagist.org/packages/jfcherng/php-aacodec"><img alt="Packagist Version" src="https://img.shields.io/packagist/v/jfcherng/php-aacodec"></a>
+<a href="https://github.com/jfcherng/php-aacodec/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/php-aacodec"></a>
+<a href="https://github.com/jfcherng/php-aacodec/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jfcherng/php-aacodec?logo=github"></a>
+<a href="https://www.paypal.me/jfcherng/5usd" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-blue.svg?logo=paypal" /></a>
 
-## References
-
-- What is AA? ([Japanese style emoticons, Kaomoji, 顔文字](http://utf-8.jp/public/aaencode.html))
+A PHP implementation of the [aaencode](http://utf-8.jp/public/aaencode.html).
 
 
 ## Installation
 
-```
+```bash
 $ composer require jfcherng/php-aacodec
 ```
 
@@ -18,6 +22,8 @@ $ composer require jfcherng/php-aacodec
 After executing the following PHP code,
 
 ```php
+<?php
+
 use Jfcherng\AaCodec\Codec;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -43,9 +49,3 @@ file_put_contents('decoded.js', $decoded);
 ```javascript
 alert("hello world");
 ```
-
-
-Supporters <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ATXYY9Y78EQ3Y" target="_blank"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" /></a>
-==========
-
-Thank you guys for sending me some cups of coffee.
