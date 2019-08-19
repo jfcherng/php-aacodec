@@ -123,11 +123,11 @@ class Codec
             throw new UndecodableException('the input JavaScript is not decodable.');
         }
 
-        $decoded = static::unifyJavascript(static::deobfuscate($encoded));
+        $decoded = static::unifyJavascript(static::deobfuscate((string) $encoded));
 
         return \mb_substr($js, 0, $start, 'UTF-8')
             . $decoded
-            . static::decode(\mb_substr($js, $next, null, 'UTF-8'));
+            . static::decode(\mb_substr($js, (int) $next, null, 'UTF-8'));
     }
 
     /**
