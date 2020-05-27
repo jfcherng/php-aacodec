@@ -104,8 +104,6 @@ final class CodecTest extends TestCase
      * Append a trailing semicolon to a string.
      *
      * @param string $str The string
-     *
-     * @return string
      */
     protected function unifyJavascript(string $str): string
     {

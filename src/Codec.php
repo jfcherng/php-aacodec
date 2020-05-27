@@ -53,8 +53,6 @@ class Codec
      *
      * @param string $js    the JavaScript code
      * @param int    $level larger = longer encoded code
-     *
-     * @return string
      */
     public static function encode(string $js, int $level = 0): string
     {
@@ -137,8 +135,6 @@ class Codec
      * @param null|int    &$start
      * @param null|int    &$next
      * @param null|string &$encoded
-     *
-     * @return bool
      */
     public static function isAaEncoded(string $js, ?int &$start = null, ?int &$next = null, ?string &$encoded = null): bool
     {
@@ -196,10 +192,7 @@ class Codec
     }
 
     /**
-     * @param int $byte
      * @param int $level larger = longer encoded code
-     *
-     * @return string
      */
     protected static function randomize(int $byte, int $level): string
     {
@@ -243,8 +236,6 @@ class Codec
 
     /**
      * @param string $js the JavaScript code
-     *
-     * @return string
      */
     protected static function deobfuscate(string $js): string
     {
@@ -306,8 +297,6 @@ class Codec
      * Append a trailing semicolon to a string.
      *
      * @param string $str The string
-     *
-     * @return string
      */
     protected static function unifyJavascript(string $str): string
     {
