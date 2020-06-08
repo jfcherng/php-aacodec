@@ -1,11 +1,11 @@
 # php-aacodec
 
-<a href="https://travis-ci.org/jfcherng/php-aacodec"><img alt="Travis (.org) branch" src="https://img.shields.io/travis/jfcherng/php-aacodec/master"></a>
-<a href="https://packagist.org/packages/jfcherng/php-aacodec"><img alt="Packagist" src="https://img.shields.io/packagist/dt/jfcherng/php-aacodec"></a>
-<a href="https://packagist.org/packages/jfcherng/php-aacodec"><img alt="Packagist Version" src="https://img.shields.io/packagist/v/jfcherng/php-aacodec"></a>
-<a href="https://github.com/jfcherng/php-aacodec/blob/master/LICENSE"><img alt="Project license" src="https://img.shields.io/github/license/jfcherng/php-aacodec"></a>
-<a href="https://github.com/jfcherng/php-aacodec/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/jfcherng/php-aacodec?logo=github"></a>
-<a href="https://www.paypal.me/jfcherng/5usd" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-blue.svg?logo=paypal" /></a>
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/jfcherng/php-aacodec/Main/master?style=flat-square)](https://github.com/jfcherng/php-aacodec/actions)
+[![Packagist](https://img.shields.io/packagist/dt/jfcherng/php-aacodec?style=flat-square)](https://packagist.org/packages/jfcherng/php-aacodec)
+[![Packagist Version](https://img.shields.io/packagist/v/jfcherng/php-aacodec?style=flat-square)](https://packagist.org/packages/jfcherng/php-aacodec)
+[![Project license](https://img.shields.io/github/license/jfcherng/php-aacodec?style=flat-square)](https://github.com/jfcherng/php-aacodec/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/jfcherng/php-aacodec?style=flat-square&logo=github)](https://github.com/jfcherng/php-aacodec/stargazers)
+[![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-blue.svg?style=flat-square&logo=paypal)](https://www.paypal.me/jfcherng/5usd)
 
 A PHP implementation of the [aaencode](http://utf-8.jp/public/aaencode.html).
 
