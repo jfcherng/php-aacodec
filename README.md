@@ -1,6 +1,6 @@
 # php-aacodec
 
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/jfcherng/php-aacodec/Main/master?style=flat-square)](https://github.com/jfcherng/php-aacodec/actions)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/jfcherng/php-aacodec/php.yml?branch=master&style=flat-square)](https://github.com/jfcherng/php-aacodec/actions)
 [![Packagist](https://img.shields.io/packagist/dt/jfcherng/php-aacodec?style=flat-square)](https://packagist.org/packages/jfcherng/php-aacodec)
 [![Packagist Version](https://img.shields.io/packagist/v/jfcherng/php-aacodec?style=flat-square)](https://packagist.org/packages/jfcherng/php-aacodec)
 [![Project license](https://img.shields.io/github/license/jfcherng/php-aacodec?style=flat-square)](https://github.com/jfcherng/php-aacodec/blob/master/LICENSE)
